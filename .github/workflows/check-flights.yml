@@ -1,0 +1,54 @@
+name: Flight Deal Alerts
+
+on:
+  schedule:
+    # Every 30 minutes. GitHub may delay scheduled runs under load — that's fine.
+    - cron: "*/30 * * * *"
+  workflow_dispatch:
+    inputs:
+      test:
+        description: "Send a test Telegram message and exit (no flight search)"
+        type: boolean
+        default: false
+
+# Needed so the job can commit the updated de-dup state back to the repo.
+permissions:
+  contents: write
+
+# Never run two checks at once (they'd fight over the state file).
+concurrency:
+  group: flight-alerts
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run flight monitor
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TEST_MODE: ${{ inputs.test }}
+        run: python main.py
+
+      - name: Persist alert history
+        if: ${{ always() }}
+        run: |
+          if [ -n "$(git status --porcelain state/seen_deals.json)" ]; then
+            git config user.name "flight-deal-bot"
+            git config user.email "flight-deal-bot@users.noreply.github.com"
+            git add state/seen_deals.json
+            git commit -m "Update alert history [skip ci]"
+            git push
+          else
+            echo "No state changes to commit."
+          fi

@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+.env
+.venv/
+venv/
+.DS_Store
+
+# NOTE: state/seen_deals.json is intentionally committed so alert history
+# persists between GitHub Actions runs. Do not ignore it.
