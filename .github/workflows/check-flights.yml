@@ -48,6 +48,7 @@ jobs:
             git config user.email "flight-deal-bot@users.noreply.github.com"
             git add state/seen_deals.json
             git commit -m "Update alert history [skip ci]"
+            git pull --rebase origin main
             git push
           else
             echo "No state changes to commit."
