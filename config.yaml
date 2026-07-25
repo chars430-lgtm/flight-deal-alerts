@@ -8,7 +8,7 @@ currency: EUR
 
 # Default max round-trip price. A deal only alerts if its TOTAL (out + back)
 # price is at or below this. Can be overridden per-route below.
-max_round_trip_price: 30
+max_round_trip_price: 100
 
 # Don't re-send the same deal more often than this many hours...
 cooldown_hours: 24
@@ -20,25 +20,25 @@ search_window:
   earliest_days_from_now: 1     # start searching from tomorrow
   latest_days_from_now: 90      # up to 90 days out
   min_trip_nights: 2            # trip must be at least this many nights
-  max_trip_nights: 14           # ...and at most this many
+  max_trip_nights: 3         # ...and at most this many
 
 # ----------------------------------------------------------------------------
 #  Routes to watch. Each route is one origin airport (IATA code).
-#  - destinations: []  -> "ANYWHERE" (best for hunting extreme deals)
-#  - destinations: ["OPO","LIS"] -> only alert for these destinations
+#  - destinations: [NUE]  -> "ANYWHERE" (best for hunting extreme deals)
+#  - destinations: [] -> only alert for these destinations
 #  - max_price: optional per-route override of max_round_trip_price
 # ----------------------------------------------------------------------------
 routes:
-  # Example 1: cheapest round trip to ANYWHERE from Dublin, under €25 total
-  - origin: DUB
+  # Example 1: cheapest round trip to ANYWHERE from Nuremberg, under €100 total
+  - origin: NUE
     destinations: []
-    max_price: 25
-    label: "Dublin -> anywhere"
+    max_price: 100
+    label: "Nuremberg -> anywhere"
 
   # Example 2: only Porto or Lisbon from London Stansted, under €20 total
   - origin: STN
-    destinations: ["OPO", "LIS"]
-    max_price: 20
-    label: "Stansted -> Portugal"
+    destinations: []
+    max_price: 100
+    label: "Munich -> Anywhere"
 
   # Add your own. Find IATA codes at https://www.ryanair.com (e.g. MAD, BCN, CRL).
